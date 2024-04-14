@@ -24,7 +24,7 @@ clear
 #----------------------------------------------------------------------------------------------------------------------------------------------
     crearArchivoHost()
     {
-        sudo arp-scan -l --format='${ip}' | grep ^$segmento | sort > host.txt
+        sudo arp-scan -l --format='${ip}' | grep ^$segmento | sort > "00"_host.txt
     }
 #----------------------------------------------------------------------------------------------------------------------------------------------
     verIPsegmento()
@@ -72,7 +72,7 @@ clear
         while IFS='' read -r linea || [[ -n "$linea" ]]; do
             #printf ">%s<\n" "$linea"
             hostEncontrado+=("$linea")
-        done < host.txt
+        done < "00"_host.txt
     }
 #----------------------------------------------------------------------------------------------------------------------------------------------
     buscaTTL()
@@ -104,13 +104,16 @@ clear
                 esac
                 printf "%-41s \n" "|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|¯¯¯|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|"
                 printf "%-41s \n" "|       IP      |TTL|  POSIBLE SISTEMA  |"
-                printf "%-41s \n" "|ˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍ|ˍˍˍ|ˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍ|"
+                printf "%-41s \n" "|---------------|---|-------------------|"
                 printf            "|"
-                printf  '\e[1;34m%-13s\e[0m' "${hostEncontrado[$idMenu]}"
+                printf  "%-13s" "${hostEncontrado[$idMenu]}"
+                #printf  '\e[1;34m%-13s\e[0m' "${hostEncontrado[$idMenu]}"
                 printf                            "|"
-                printf  '\e[1;34m%-3s\e[0m' "$ipTTL"
+                printf  "%-3s" "$ipTTL"
+                #printf  '\e[1;34m%-3s\e[0m' "$ipTTL"
                 printf                                "|"
-                printf  '\e[1;34m%-19s\e[0m' "$posibleSistema"
+                printf  "%-19s" " $posibleSistema"
+                #printf  '\e[1;34m%-19s\e[0m' " $posibleSistema"
                 printf "%-1s \n"                                          "|"
                 printf "%-41s \n" "|ˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍ|ˍˍˍ|ˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍ|"
                 
@@ -124,7 +127,7 @@ clear
         echo " "
         ruta=$(pwd)
         echo -e "Buscando puertos abiertos... (\e[0;33mEsto puede tardar un poco...\e[0m) " #en IP ${hostEncontrado[$idMenu]}
-        sudo nmap -vvv -p- -T4 -sS ${hostEncontrado[$idMenu]}  | grep ^"Discovered open port" | cut -d " " -f4 | cut -d "/" -f1 | sort > puerto_${hostEncontrado[$idMenu]}.txt
+        sudo nmap -vvv -p- -T4 -sS ${hostEncontrado[$idMenu]}  | grep ^"Discovered open port" | cut -d " " -f4 | cut -d "/" -f1 | sort > "01"_puerto_${hostEncontrado[$idMenu]}.txt
     }
 #----------------------------------------------------------------------------------------------------------------------------------------------
     leerArchivoPuerto()
@@ -133,21 +136,23 @@ clear
         while IFS='' read -r linea || [[ -n "$linea" ]]; do
             #printf ">%s<\n" "$linea"
             puertoEncontrado+=("$linea")
-        done < puerto_${hostEncontrado[$idMenu]}.txt
+        done < "01"_puerto_${hostEncontrado[$idMenu]}.txt
     }
 #----------------------------------------------------------------------------------------------------------------------------------------------
     verPuerto()
     {
                 printf  "%-93s \n"  "|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|"
                 printf  "%-29s"     "|          Se han encontrado "
-                printf '\e[1;34m%-5s\e[0m'  "${#puertoEncontrado[@]}"
+                printf  "%-5s"      "${#puertoEncontrado[@]}"
+                #printf '\e[1;34m%-5s\e[0m'  "${#puertoEncontrado[@]}"
                 printf  "%-58s"     " puerto(s) abiertos        "
                 printf  "%-1s \n"   "|"
                 printf  "%-93s \n"  "|ˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍ|"
                 printf  "%-1s"      " "
-                printf '\e[1;34m%-19s\e[0m'  "${puertoEncontrado[*]}"
+                printf '%-19s'  "${puertoEncontrado[*]}"
+                #printf '\e[1;34m%-19s\e[0m'  "${puertoEncontrado[*]}"
                 printf  "%-1s \n" " "
-                printf  "%-93s"     "|ˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍ|"
+                printf  "%-93s \n"  "|ˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍ|"
 
         
         
@@ -155,7 +160,7 @@ clear
 #----------------------------------------------------------------------------------------------------------------------------------------------
     crearArchivoServicio()
     {
-        sudo nmap $lineaPuerto -sV -T4 ${hostEncontrado[$idMenu]} | grep "open" | sort > servicio_${hostEncontrado[$idMenu]}.txt
+        sudo nmap $lineaPuerto -sV -T4 ${hostEncontrado[$idMenu]} | grep "open" | sort > "02"_servicio_${hostEncontrado[$idMenu]}.txt
     }
 #----------------------------------------------------------------------------------------------------------------------------------------------
     leerArchivoServicio()
@@ -164,7 +169,7 @@ clear
         while IFS='' read -r linea || [[ -n "$linea" ]]; do
             #printf ">%s<\n" "$linea"
             servicioEncontrado+=("$linea")
-        done < servicio_${hostEncontrado[$idMenu]}.txt
+        done < "02"_servicio_${hostEncontrado[$idMenu]}.txt
     }
 #----------------------------------------------------------------------------------------------------------------------------------------------
     verServicioEncontrado()
@@ -226,12 +231,13 @@ clear
             then
                 if [ $crearResumen == "S" ]
                     then
-                        verSOsegunTTL > Reporte_${hostEncontrado[$idMenu]}.txt
-                        printf "\n" >> Reporte_${hostEncontrado[$idMenu]}.txt
-                        verPuerto >> Reporte_${hostEncontrado[$idMenu]}.txt
-                        printf "\n" >> Reporte_${hostEncontrado[$idMenu]}.txt
-                        verServicioEncontrado >> Reporte_${hostEncontrado[$idMenu]}.txt
+                        verSOsegunTTL > "03"_reporte_${hostEncontrado[$idMenu]}.txt
+                        printf "\n" >> "03"_reporte_${hostEncontrado[$idMenu]}.txt
+                        verPuerto >> "03"_reporte_${hostEncontrado[$idMenu]}.txt
+                        printf "\n" >> "03"_reporte_${hostEncontrado[$idMenu]}.txt
+                        verServicioEncontrado >> "03"_reporte_${hostEncontrado[$idMenu]}.txt
                 fi
+                printf "Archivo reporte generado : $(pwd)/03_reporte_${hostEncontrado[$idMenu]}.txt"
         fi
     }   
 #----------------------------------------------------------------------------------------------------------------------------------------------
