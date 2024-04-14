@@ -1,5 +1,5 @@
 #!/bin/bash
-# Identifica segmento de trabajo, busca equipos usando arp-scan e identifica posible S.O. segun TTL
+# Identifica segmento de trabajo, busca equipos usando ping e identifica posible S.O. segun TTL
 # Realizado por Moises Beltran D.
 
 #Limpiar Pantalla
@@ -9,17 +9,17 @@ clear
 #----------------------------------------------------------------------------------------------------------------------------------------------
     verIPencontrada()
     {   
-        echo "|¯¯¯¯|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|"
-        echo "| ID |        IP       |"
-        echo "|ˍˍˍˍ|ˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍ|"
-        echo "|    |                 |"
+        printf "%-24s \n" "|¯¯¯¯|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|"
+        printf "%-24s \n" "| ID |        IP       |"
+        printf "%-24s \n" "|ˍˍˍˍ|ˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍ|"
+        printf "%-24s \n" "|    |                 |"
         for i in ${!hostEncontrado[@]}; do
             printf "|"
             printf "%-4s" "$i"
             printf "%-18s" "| ${hostEncontrado[$i]}"
             printf "%-1s \n" "|"
         done
-        echo "|ˍˍˍˍ|ˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍ|"
+        printf "%-24s \n" "|ˍˍˍˍ|ˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍ|"
     }
 #----------------------------------------------------------------------------------------------------------------------------------------------
     crearArchivoHost()
@@ -29,23 +29,20 @@ clear
 #----------------------------------------------------------------------------------------------------------------------------------------------
     verIPsegmento()
     {
-        #echo $ipSegmento
-        #echo "-------------------------"    
         #De la linea separo e identifico 3 octetos
         miIP=$(echo $ipSegmento | cut -d " " -f8 )
-        #echo $miIP
         oct1=$(echo $ipSegmento | cut -d " " -f8 | cut -d "." -f1)
-        #echo $oct1
         oct2=$(echo $ipSegmento | cut -d " " -f8 | cut -d "." -f2)
-        #echo $oct2
         oct3=$(echo $ipSegmento | cut -d " " -f8 | cut -d "." -f3)
-        #echo $oct3
+        
         #Con los octetos realizo armado de segmento
         segmento=$oct1.$oct2.$oct3
-        #echo $segmento
-        echo "IP local es                         : $miIP"
-        echo "El segmento en el que se buscara es : $segmento.x/24"
-        echo " "
+        
+        printf "%-40s   " "IP local                            : "
+        printf "%-15s \n" "$miIP"
+        printf "%-40s   " "El segmento en el que se buscara es : "
+        printf "%-15s \n \n" "$segmento.x/24"
+        
     }
 #----------------------------------------------------------------------------------------------------------------------------------------------
     leerOpcion()   
@@ -53,9 +50,9 @@ clear
         clear
         verIPsegmento
         verIPencontrada
-        echo " "
+        printf "\n"
         read -p "Ingresa el ID de la IP listada: " idMenu
-        echo " "
+        printf "\n"
         validarOpcion
     }
 #----------------------------------------------------------------------------------------------------------------------------------------------
@@ -105,20 +102,20 @@ clear
                             posibleSistema="Sin informacion"
                         ;;
                 esac
-                echo    "|¯¯¯¯¯¯¯¯¯¯¯¯¯|¯¯¯|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|"
-                echo    "|       IP    |TTL|  POSIBLE SISTEMA  |"
-                echo    "|ˍˍˍˍˍˍˍˍˍˍˍˍˍ|ˍˍˍ|ˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍ|"
-                printf    "|"
+                printf "%-41s \n" "|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|¯¯¯|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|"
+                printf "%-41s \n" "|       IP      |TTL|  POSIBLE SISTEMA  |"
+                printf "%-41s \n" "|ˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍ|ˍˍˍ|ˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍ|"
+                printf            "|"
                 printf  '\e[1;34m%-13s\e[0m' "${hostEncontrado[$idMenu]}"
-                printf    "|"
+                printf                            "|"
                 printf  '\e[1;34m%-3s\e[0m' "$ipTTL"
-                printf    "|"
+                printf                                "|"
                 printf  '\e[1;34m%-19s\e[0m' "$posibleSistema"
-                printf  "%-1s \n" "|"
-                echo    "|ˍˍˍˍˍˍˍˍˍˍˍˍˍ|ˍˍˍ|ˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍ|"
+                printf "%-1s \n"                                          "|"
+                printf "%-41s \n" "|ˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍ|ˍˍˍ|ˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍ|"
                 
             else
-                echo "Sin TTL para informar"
+                printf "%-21s \n" "Sin TTL para informar"
         fi
     }
 #----------------------------------------------------------------------------------------------------------------------------------------------
@@ -158,8 +155,6 @@ clear
 #----------------------------------------------------------------------------------------------------------------------------------------------
     crearArchivoServicio()
     {
-        echo " "
-        ruta=$(pwd)
         sudo nmap $lineaPuerto -sV -T4 ${hostEncontrado[$idMenu]} | grep "open" | sort > servicio_${hostEncontrado[$idMenu]}.txt
     }
 #----------------------------------------------------------------------------------------------------------------------------------------------
@@ -188,14 +183,15 @@ clear
             printf "%-24s" "| $sServicio"
             printf "%-48s \n" "| $sVersion"
         done
+        printf  "%-127s \n"  "|ˍˍˍˍˍˍˍˍˍˍˍ|ˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍ|ˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍˍ"
     }
 #----------------------------------------------------------------------------------------------------------------------------------------------
     buscarServicio()
     {
         if [ "$puertoEncontrado" ]
             then
-                echo " "
-                echo -e "Identificando servicios (\e[0;33mEsto puede tardar un poco...\e[0m)"
+                printf "\n"
+                echo -e "Identificando servicios...   (\e[0;33mEsto puede tardar un poco...\e[0m)"
                 inicio=0
                 let fin=${#puertoEncontrado[@]}-1 
 
@@ -223,14 +219,17 @@ clear
 #----------------------------------------------------------------------------------------------------------------------------------------------
     generarArchivoReport()
     {
-        read -p "Desea crear archivo resumen S/N (Esto tarda...): " crearResumen
+        printf "\n"
+        read -p "Desea crear archivo resumen S/N : " crearResumen
 
         if [ "$crearResumen" ]
             then
                 if [ $crearResumen == "S" ]
                     then
                         verSOsegunTTL > Reporte_${hostEncontrado[$idMenu]}.txt
+                        printf "\n" >> Reporte_${hostEncontrado[$idMenu]}.txt
                         verPuerto >> Reporte_${hostEncontrado[$idMenu]}.txt
+                        printf "\n" >> Reporte_${hostEncontrado[$idMenu]}.txt
                         verServicioEncontrado >> Reporte_${hostEncontrado[$idMenu]}.txt
                 fi
         fi
