@@ -1,3 +1,4 @@
 # bash
-Mis códigos e inventos personales
-En este lugar pretendo ir guardando esos inventos de codigo que para mi sean de utilidad o simples inventos que mejorar paso a paso.
+Aqui estaran algunos script e inventos personales...
+
+En este lugar pretendo ir guardando algunas cosas para ir mejorando paso a paso.
